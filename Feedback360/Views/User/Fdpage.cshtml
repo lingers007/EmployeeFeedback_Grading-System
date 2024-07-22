@@ -1,0 +1,57 @@
+﻿@model IEnumerable<DLFeedback360.Model.FeedbackDetail>
+
+@{
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Fdpage</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+    <style type="text/css">
+        .disableFeedback {
+            color: gray;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmployeeId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmployeeName)
+                </th>
+                <th>Action</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeName)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Provide feedback", "GiveFeedback", new { id = item.Id }, new { @class = (item.IsActive == false ? "" : "disableFeedback") })
+                    </td>
+                    <td>
+                        <span>@(item.IsActive == true ? "Done" : "Pending")</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

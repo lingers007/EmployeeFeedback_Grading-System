@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+    int id = 1;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetAllEmpFeedback</title>
+</head>
+<body class="container">
+    <table class="table table-bordered">
+        <tr>
+            <th>Sr. No.</th>
+            <th>User</th>
+            <th>Rating</th>
+        </tr>
+        @foreach (SelectListItem user in ViewBag.Users)
+        {
+            <tr>
+                <td>@id</td>
+                <td>@user.Text</td>
+                <td>@user.Value</td>
+            </tr>
+            id++;
+        }
+    </table>
+</body>
+</html>

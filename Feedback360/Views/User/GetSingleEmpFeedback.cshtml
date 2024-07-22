@@ -1,0 +1,27 @@
+﻿@{
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetSingleEmpFeedback</title>
+</head>
+<body class="container">
+    @if (ViewBag.Rating != null)
+    {
+        <table style="width:120px !important;">
+            <tr>
+                <th>Your rating is: </th>
+                <td>@ViewBag.Rating</td>
+            </tr>
+        </table>
+    }
+    @if (ViewBag.InCompleteMessage != null)
+    {
+        <h3>@Html.Raw(ViewBag.InCompleteMessage)</h3>
+    }
+</body>
+

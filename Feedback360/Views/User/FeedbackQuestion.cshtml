@@ -1,0 +1,82 @@
+﻿@using DLFeedback360.Model;
+@model AddQuestion
+
+@{
+    Layout = null;
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>FeedbackQuestion</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+</head>
+<body class="container">
+
+    <h4>AddQuestion</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-controller="User" asp-action="GetQuestionsByDesign">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="DesignID" class="control-label"></label>
+                    @Html.DropDownList("DesignID", new SelectList(ViewBag.VendorDisplay, "DesignID", "Desig"), "Please select Designation", new { @id = "ddlNames", @class = "form-control", @onchange = "this.form.submit();" })
+                </div>
+                @* <div class="form-group">
+                <label asp-for="Qid" class="control-label"></label>
+                <input type="text" asp-for="Qid" class="form-control" />
+                <span asp-validation-for="Qid" class="text-danger"></span>
+                </div> *@
+                <div class="form-group">
+                    <label asp-for="QDescription" class="control-label"></label>
+                    <input asp-for="QDescription" class="form-control" />
+                    <span asp-validation-for="QDescription" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" asp-action="FeedbackQuestion" />
+                </div>
+            </form>
+        </div>
+    </div>
+    @if (ViewBag.FeedbackQuestions != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Qid
+                    </th>
+                    <th>
+                        QDescription
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (AddQuestion item in ViewBag.FeedbackQuestions)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Qid)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QDescription)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("[id*=QDescription]").val("");
+        });
+    </script>
+</body>
+</html>

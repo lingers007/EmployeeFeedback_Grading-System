@@ -1,0 +1,69 @@
+﻿@model DLFeedback360.Model.Login
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetLogin</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+    <style type="text/css">
+        .field-validation-error {
+            color: red;
+        }
+
+        .textBoxWidth {
+            width: 600px;
+            height: 40px;
+        }
+
+        .dropDownListWidth {
+            width: 200px;
+        }
+    </style>
+    @ViewBag.Error
+</head>
+<body class="container">
+
+    <h4>Login</h4>
+    <hr />
+
+    <form asp-action="GetLogin">
+        <div class="row">
+            <div class="col-md-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="UserID" class="control-label"></label>
+                    <input asp-for="UserID" class="form-control textBoxWidth" />
+                    <span asp-validation-for="UserID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label><br />
+                    @*<input asp-for="Password" class="form-control textBoxWidth" />*@
+                    @Html.PasswordFor(m => m.Password, new { @class = "textBoxWidth" })
+                    <span asp-validation-for="Password" class="text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Login" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div>
+        <a asp-action="ForgotPassword">Forgot Password</a>
+    </div>
+    @if (TempData["RegMessage"] != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                alert('@TempData["RegMessage"]');
+            };
+        </script>
+    }
+</body>
+</html>

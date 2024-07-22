@@ -1,0 +1,100 @@
+﻿@model IEnumerable<DLFeedback360.Model.AddQuestion>
+
+@{
+    Layout = null;
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GiveFeedback</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body class="container">
+    <input type="hidden" id="hfToID" value="@ViewBag.Id" />
+    <table class="table" id="tblRatings">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Qid)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.QDescription)
+                </th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Qid)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.QDescription)
+                    </td>
+                    <td>
+                        <select id="ddlRatings">
+                            <option value="">Select the rating</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <input id="btnSubmit" type="submit" value="Save" class="btn btn-primary" />
+    <script type="text/javascript">
+        $(function () {
+            $("#btnSubmit").click(function () {
+                var isValid = true;
+                var userRatings = [];
+                $("#tblRatings > tbody > tr").each(function (index, item) {
+                    // Adding an object.
+                    var questionRating = {};
+                    // Adding ToID to object.
+                    questionRating.ToID = $("#hfToID").val();
+                    // Adding Rating to object.
+                    questionRating.QID = $(this).find('td').eq(0).html().trim();
+                    // Adding Rating to object.
+                    questionRating.Rating = $(this).find('td').eq(2).find('select').val();
+
+                    if (questionRating.Rating != "") {
+                        // Insert the record to Array.
+                        userRatings.push(questionRating);
+                    } else {
+                        alert("Please provide rating for " + $(this).find('td').eq(1).html().trim());
+                        isValid = false;
+                        return isValid;
+                    }
+                });
+
+                if (isValid) {
+                    // Making Ajax call to send all rows from Rating table to Controller.
+                    $.ajax({
+                        method: "POST",
+                        url: "/User/SaveFeedback",
+                        data: { "questions": userRatings },
+                        success: function (response) {
+                            alert(response);
+                            window.location.href = "/User/Fdpage";
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

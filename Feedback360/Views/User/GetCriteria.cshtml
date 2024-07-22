@@ -1,0 +1,120 @@
+﻿@using DLFeedback360.Model
+@model List<RatingModel>
+@{
+    ViewData["Title"] = "GetCriteria";
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetCriteria</title>
+</head>
+<body class="container">
+    <form asp-action="GetCriteria">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Employee</label>
+                    @Html.Hidden("UserID", "", new { @Id = "hfUserID" })
+                    @Html.DropDownList("Employee", new SelectList(ViewBag.VendorDisplay2, "DesignID", "UserID"), "Please select employee", new { @id = "ddlEmployees", @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.DropDownList("DesignID", Enumerable.Empty<SelectListItem>(), "Please select designation", new { @id = "ddlDesignations", @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <input id="btnGetDetails" type="button" value="Get Details" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+        <table id="tblRatings" class="table table-bordered" style="display:none">
+            <thead>
+                <tr>
+                    <th>Question Id</th>
+                    <th>Description</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        @if (Model != null && ((Model as List<RatingModel>).Count > 0))
+        {
+            <table class="table table-bordered">
+                <tr>
+                    <th>Question Id</th>
+                    <th>Description</th>
+                    <th>Rating</th>
+                </tr>
+                @foreach (RatingModel user in Model)
+                {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.Description</td>
+                        <td>@user.Rating</td>
+                    </tr>
+                }
+            </table>
+        }
+        <input type="submit" value="Evaluate" class="btn btn-primary" />
+    </form>
+    @if (ViewBag.IsQualified != null)
+    {
+        @(ViewBag.IsQualified ? "Qualified" : "Not Qualified")
+    }
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("[id*=ddlEmployees]").change(function () {
+                var employeeId = $(this).find("option:selected").text()
+                var designationId = $(this).val();
+                $("[id*=hfUserID]").val(employeeId);
+                $.ajax({
+                    type: "POST",
+                    url: "/User/PopulateHigherDesignations",
+                    data: { designId: designationId },
+                    success: function (response) {
+                        var ddlDesignations = $("[id*=ddlDesignations]");
+                        ddlDesignations.empty().append('<option selected="selected" value="0">Please select designation</option>');
+                        $.each(response, function () {
+                            ddlDesignations.append($("<option></option>").val(this['designID']).html(this['desig']));
+                        });
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+
+            $("[id*=btnGetDetails]").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/User/GetRatings",
+                    data: { userID: $("[id*=UserID]").val() },
+                    success: function (ratings) {
+                        var table = $("#tblRatings");
+                        table.find("tr:not(:first)").remove();
+                        $.each(ratings, function (i, rating) {
+                            var table = $("#tblRatings");
+                            var row = table[0].insertRow(-1);
+                            $(row).append("<td />");
+                            $(row).find("td").eq(0).html(rating.id);
+                            $(row).append("<td />");
+                            $(row).find("td").eq(1).html(rating.description);
+                            $(row).append("<td />");
+                            $(row).find("td").eq(2).html(rating.rating);
+                        });
+                        $("#tblRatings").show();
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

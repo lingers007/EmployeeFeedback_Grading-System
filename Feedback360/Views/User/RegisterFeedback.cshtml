@@ -1,0 +1,113 @@
+﻿@model DLFeedback360.Model.FeedbackSchedule
+
+@{
+    Layout = null;
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>RegisterFeedback</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+    <style type="text/css">
+        .field-validation-error {
+            color: red;
+        }
+
+        .textBoxWidth {
+            width: 600px;
+            height: 40px;
+        }
+
+        .dropDownListWidth {
+            width: 200px;
+        }
+    </style>
+</head>
+<body class="container">
+    <h4>FeedbackSchedule</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="RegisterFeedback">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Employee" class="control-label"></label>
+                    @* <input asp-for="Employee" class="form-control textBoxWidth" />*@
+                    @Html.Hidden("UserID", "", new { @Id = "hfUserID" })
+                    @Html.DropDownList("Employee", new SelectList(ViewBag.VendorDisplay2, "DesignID", "UserID"), "Please select Employee", new { @id = "ddlsNames", @class = "form-control " })
+                    <span asp-validation-for="Employee" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FeedbackCategory" class="control-label"></label>
+                    @* <input asp-for="FeedbackCategory" class="form-control" />*@
+                    @Html.DropDownList("FeedbackCategory", new SelectList(ViewBag.VendorDisplay1, "CategoryID", "CatDesc"), "Please select Designation", new { @id = "ddnlCat", @class = "form-control" })
+                    <span asp-validation-for="FeedbackCategory" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FeedbackProvider" class="control-label"></label>
+                    @*  <input asp-for="FeedbackProvider" class="form-control" /> *@
+                    @Html.DropDownList("FeedbackProvider", Enumerable.Empty<SelectListItem>(), "Please select Feedback Provider", new { @id = "ddlNames", @class = "form-control" })
+                    <span asp-validation-for="FeedbackProvider" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastDate" class="control-label"></label>
+                    <input asp-for="LastDate" class="form-control" />
+                    <span asp-validation-for="LastDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+    @if (TempData["RegisterFeedbackMessage"] != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                alert('@TempData["RegisterFeedbackMessage"]');
+            };
+        </script>
+    }
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("[id*=ddlsNames]").change(function () {
+                $("[id*=hfUserID]").val($(this).find("option:selected").text());
+            });
+
+            $("[id*=ddnlCat]").change(function () {
+                var designIDr = $("[id*=ddlsNames]").val();
+                var categoryIDr = $(this).val();
+                var userIDr = $("[id*=ddlsNames]").find("option:selected").text();
+                $.ajax({
+                    type: "POST",
+                    url: "/User/PopulateNames",
+                    data: { designId: designIDr, categoryId: categoryIDr, userId: userIDr },
+                    success: function (response) {
+                        var ddlNames = $("[id*=ddlNames]");
+                        ddlNames.empty().append('<option selected="selected" value="0">Please select Feedback Provider</option>');
+                        $.each(response, function () {
+                            //the first one is the hidden value  and the second one  is for display in the dropdownlist
+                            ddlNames.append($("<option></option>").val(this['userID']).html(this['userID']));
+                        });
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+﻿@model DLFeedback360.Model.UserDetail
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_PageLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+    @* @ViewBag.Info *@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+</head>
+<body class="container">
+    <h4>User Registration Details</h4>
+    <hr />
+    <form asp-action="Register">
+        <div class="row">
+            <div class="col-md-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="UserID" class="control-label"></label>
+                    <input asp-for="UserID" class="form-control" />
+                    <span asp-validation-for="UserID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MobNumber" class="control-label"></label>
+                    <input asp-for="MobNumber" class="form-control" />
+                    <span asp-validation-for="MobNumber" class="text-danger  "></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="EmailID" class="control-label"></label>
+                    <input asp-for="EmailID" class="form-control" />
+                    <span asp-validation-for="EmailID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EmpID" class="control-label"></label>
+                    <input asp-for="EmpID" class="form-control" />
+                    <span asp-validation-for="EmpID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RoleID" class="control-label"></label>
+                    @*  <input asp-for="RoleID" class="form-control" /> *@
+                    @Html.DropDownList("RoleID", new SelectList(ViewBag.VendorDisplay, "RoleID", "RoleName"), "Please select Role", new { @id = "ddlNames", @class = "form-control" })
+                    <span asp-validation-for="RoleID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DesignID" class="control-label"></label>
+                    @*  <input asp-for="DesignID" class="form-control" />*@
+                    @Html.DropDownList("DesignID", new SelectList(ViewBag.VendorDisplay1, "DesignID", "Desig"), "Please select Designation", new { @id = "ddnlNames", @class = "form-control" })
+                    <span asp-validation-for="DesignID" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</body>
+</html>
